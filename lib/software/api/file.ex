@@ -58,6 +58,11 @@ defmodule Helix.Software.API.File do
     end
   end
 
+  defp storages_on_server(server) do
+    {:ok, storages} = CacheQuery.from_server_get_storages(server.server_id)
+    storages
+  end
+
   @spec storages_on_server(struct) ::
   [struct]
   defp storages_on_server(server) do
