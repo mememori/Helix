@@ -3,8 +3,8 @@ defmodule Helix.Server.Websocket.Routes do
   alias Helix.Websocket.Socket, warn: false
   alias Helix.Entity.Query.Entity, as: EntityQuery
   alias Helix.Entity.Action.Database, as: DatabaseAction
-  alias Helix.Hardware.Query.NetworkConnection, as: NetworkConnectionQuery
   alias Helix.Software.Action.Flow.Cracker, as: CrackerFlow
+  alias Helix.Cache.Query.Cache, as: CacheQuery
 
   # Note that this is somewhat a hack to allow us to break our request-response
   # channel into several parts (one on each domain). So this code will be
@@ -33,12 +33,11 @@ defmodule Helix.Server.Websocket.Routes do
     end
 
     with \
-      server = %{} <- NetworkConnectionQuery.get_server_by_ip(network, target),
+      {:ok, server} <- CacheQuery.from_nip_get_server(network, target),
       # FIXME
       entity = %{} <- account |> EntityQuery.get_entity_id() |> EntityQuery.fetch(),
-      server_id = server.server_id,
-      {:ok, _} <- create_hack_db_entry.(entity, server_id),
-      {:ok, process} <- start_cracker.(entity, server_id)
+      {:ok, _} <- create_hack_db_entry.(entity, server.server_id),
+      {:ok, process} <- start_cracker.(entity, server.server_id)
     do
       {:ok, process}
     end

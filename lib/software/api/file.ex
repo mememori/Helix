@@ -1,12 +1,10 @@
 defmodule Helix.Software.API.File do
 
-  alias Helix.Hardware.Query.Motherboard, as: MotherboardQuery
-  alias Helix.Hardware.Query.Component, as: ComponentQuery
-  alias Helix.Software.Query.Storage, as: StorageQuery
   alias Helix.Server.Query.Server, as: ServerQuery
   alias Helix.Software.Query.File, as: FileQuery
   alias Helix.Software.Action.Flow.FileDownload, as: FileDownloadFlow
   alias Helix.Software.API.View.File, as: FileView
+  alias Helix.Cache.Query.Cache, as: CacheQuery
 
   def index(destination) do
     destination
@@ -62,23 +60,4 @@ defmodule Helix.Software.API.File do
     {:ok, storages} = CacheQuery.from_server_get_storages(server.server_id)
     storages
   end
-
-  @spec storages_on_server(struct) ::
-  [struct]
-  defp storages_on_server(server) do
-    server.motherboard_id
-    |> ComponentQuery.fetch()
-    |> MotherboardQuery.fetch!()
-    |> MotherboardQuery.get_slots()
-    # TODO: Delegate this to a function on Motherboard API
-    # Gets hdds linked to the motherboard
-    |> Enum.filter_map(
-      &(&1.link_component_type == :hdd && &1.link_component_id),
-    &(&1.link_component_id))
-    # FIXME: This belongs to an API function that facades this boring shit
-    |> Enum.map(&StorageQuery.get_storage_from_hdd/1)
-    |> Enum.reject(&is_nil/1)
-    |> Enum.uniq()
-  end
-
 end

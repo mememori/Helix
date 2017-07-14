@@ -28,7 +28,7 @@ defmodule Helix.Hardware.Internal.Component do
 
   @spec fetch(HELL.PK.t) :: Component.t | nil
   def fetch(component_id),
-    do: Repo.get(Component, component_id)
+    do: Repo.get(Component, component_id) |> Repo.preload(:slot)
 
   @spec find([find_param], meta :: []) :: [Component.t]
   def find(params, _meta \\ []) do
@@ -55,4 +55,21 @@ defmodule Helix.Hardware.Internal.Component do
     do: Component.Query.from_type_list(query, type_list)
   defp reduce_find_params({:type, type}, query),
     do: Component.Query.by_type(query, type)
+
+  def get_motherboard(component = %Component{}) do
+    component
+    |> Repo.preload(:slot)
+    |> Map.get(:slot)
+    |> case do
+         nil ->
+           nil
+         slot ->
+           Map.get(slot, :motherboard_id)
+       end
+  end
+  def get_motherboard(component_id) do
+    component_id
+    |> fetch()
+    |> get_motherboard()
+  end
 end

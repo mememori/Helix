@@ -24,4 +24,9 @@ defmodule Helix.Hardware.Query.Component do
   def find(params, meta \\ []) do
     ComponentInternal.find(params, meta)
   end
+
+
+  def get_motherboard(component) do
+    ComponentInternal.get_motherboard(component)
+  end
 end
