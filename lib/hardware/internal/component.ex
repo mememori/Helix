@@ -56,6 +56,9 @@ defmodule Helix.Hardware.Internal.Component do
   defp reduce_find_params({:type, type}, query),
     do: Component.Query.by_type(query, type)
 
+  def get_motherboard(component = %Component{component_type: :mobo}) do
+    component.component_id
+  end
   def get_motherboard(component = %Component{}) do
     component
     |> Repo.preload(:slot)
