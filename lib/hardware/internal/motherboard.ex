@@ -6,7 +6,8 @@ defmodule Helix.Hardware.Internal.Motherboard do
   alias Helix.Hardware.Model.MotherboardSlot
   alias Helix.Hardware.Repo
 
-  @spec create_from_spec(ComponentSpec.t) :: {:ok, Motherboard.t} | {:error, Ecto.Changeset.t}
+  @spec create_from_spec(ComponentSpec.t) ::
+    {:ok, Motherboard.t} | {:error, Ecto.Changeset.t}
   def create_from_spec(component_spec) do
     component_spec
     |> Motherboard.create_from_spec()
