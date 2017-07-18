@@ -1,32 +1,29 @@
 defmodule Helix.Hardware.Query.Component do
 
-  alias Helix.Hardware.Internal.Component, as: ComponentInternal
   alias Helix.Hardware.Model.Component
+  alias Helix.Hardware.Query.Component.Origin, as: ComponentQueryOrigin
 
   @spec fetch(HELL.PK.t) :: Component.t | nil
   @doc """
   Fetches a component
   """
-  def fetch(component_id) do
-    ComponentInternal.fetch(component_id)
-  end
+  defdelegate fetch(component_id),
+    to: ComponentQueryOrigin
 
-  # TODO: Deprecate this
-  @spec find([ComponentInternal.find_param], meta :: []) :: [Component.t]
-  @doc """
-  Search for components
+  defdelegate get_motherboard(component),
+    to: ComponentQueryOrigin
 
-  ## Params
+  defmodule Origin do
 
-    * `:id` - search for component ids
-    * `:type` - search for components of given component types
-  """
-  def find(params, meta \\ []) do
-    ComponentInternal.find(params, meta)
-  end
+    alias Helix.Hardware.Internal.Component, as: ComponentInternal
 
+    def fetch(component_id) do
+      ComponentInternal.fetch(component_id)
+    end
 
-  def get_motherboard(component) do
-    ComponentInternal.get_motherboard(component)
+    def get_motherboard(component) do
+      ComponentInternal.get_motherboard(component)
+    end
+
   end
 end
