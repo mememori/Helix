@@ -1,6 +1,5 @@
 defmodule Helix.Hardware.Internal.Component do
 
-  alias HELL.Constant
   alias Helix.Hardware.Model.Component
   alias Helix.Hardware.Model.ComponentSpec
   alias Helix.Hardware.Model.ComponentType
